@@ -217,32 +217,6 @@ namespace Buttplug.Server.Bluetooth.Devices
             }
         }
 
-        private void OnBluetoothMessageReceieved(object sender, BluetoothMessageReceivedEventArgs e)
-        {
-            _accelerometerData += Encoding.ASCII.GetString(e.Data);
-            int chunkIdx = -1;
-            while ((chunkIdx = _accelerometerData.IndexOf(';')) >= 0)
-            {
-                var chunk = _accelerometerData.Substring(0, chunkIdx);
-                _accelerometerData = _accelerometerData.Substring(chunkIdx + 1);
-
-                if (chunk.Length == 13 && chunk[0] == 'G')
-                {
-                    // GEF008312ED00;
-                    // [0x00EF, 0x1283, 0x00ED]
-                    var axis = new int[] { 0, 0, 0 };
-                    for (int i = 0; i < 3; i++)
-                    {
-                        var data1 = Convert.ToByte(chunk.Substring((i * 2) + 1, 2), 16);
-                        var data2 = Convert.ToByte(chunk.Substring((i * 2) + 3, 2), 16);
-                        axis[i] = (short)(data1 | data2 << 8);
-                    }
-
-                    EmitMessage(new AccelerometerData(axis[0], axis[1], axis[2], Index));
-                }
-            }
-        }
-
         private async Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg)
         {
             BpLogger.Debug("Stopping Device " + Name);
