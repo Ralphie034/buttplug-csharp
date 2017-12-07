@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
 using JetBrains.Annotations;
+using System;
 
 namespace Buttplug.Server.Managers.SimulatorManager
 {
@@ -21,6 +22,7 @@ namespace Buttplug.Server.Managers.SimulatorManager
             if (da.HasLinear)
             {
                 MsgFuncs.Add(typeof(FleshlightLaunchFW12Cmd), new ButtplugDeviceWrapper(HandleFleshlightLaunchFW12Cmd));
+                MsgFuncs.Add(typeof(LinearCmd), new ButtplugDeviceWrapper(HandleLinearCmd, new Dictionary<string, string>() { { "ActuatorCount", "1" } }));
             }
 
             if (da.VibratorCount > 0)
@@ -82,7 +84,25 @@ namespace Buttplug.Server.Managers.SimulatorManager
 
         private async Task<ButtplugMessage> HandleFleshlightLaunchFW12Cmd(ButtplugDeviceMessage aMsg)
         {
-            _manager.Linear(this, (aMsg as FleshlightLaunchFW12Cmd).Speed, (aMsg as FleshlightLaunchFW12Cmd).Position);
+            _manager.Linear(this,
+                Convert.ToDouble((aMsg as FleshlightLaunchFW12Cmd).Speed) / 99,
+                Convert.ToDouble((aMsg as FleshlightLaunchFW12Cmd).Position) / 99);
+            return new Ok(aMsg.Id);
+        }
+
+        private async Task<ButtplugMessage> HandleLinearCmd(ButtplugDeviceMessage aMsg)
+        {
+            var vis = from x in (aMsg as LinearCmd).Vectors where x.Index == 0 select x;
+            if (!vis.Any())
+            {
+                return new Error("Invalid vibrator index!", Error.ErrorClass.ERROR_DEVICE, aMsg.Id);
+            }
+
+            foreach (var vi in vis)
+            {
+                _manager.Linear2(this, vi.Duration, vi.Position);
+            }
+
             return new Ok(aMsg.Id);
         }
     }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Buttplug.Server.Util;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,18 +25,17 @@ namespace Buttplug.Apps.DeviceSimulatorGUI
 
         public bool HasRotator;
 
-        internal uint LinearTargetPosition;
+        internal double LinearTargetPosition;
 
         internal double LinearCurrentPosition;
 
         internal long LinearCurrentTime;
 
-        internal uint LinearSpeed;
+        internal double LinearSpeed;
 
         private Task _posThread;
 
         private CancellationTokenSource _tokenSource;
-        private double _linearPosMax;
 
         private Dictionary<uint, VibratorRow> _vibrators = new Dictionary<uint, VibratorRow>();
 
@@ -51,7 +51,7 @@ namespace Buttplug.Apps.DeviceSimulatorGUI
             DeviceHasLinear.Checked += LinearCheckedEventHandler;
             DeviceHasRotator.Checked += RotatorCheckedEventHandler;
 
-            _linearPosMax = LinearPosition.Maximum;
+            LinearCurrentPosition = 0;
 
             _tokenSource = new CancellationTokenSource();
             _posThread = new Task(() => { posUpdater(_tokenSource.Token); }, _tokenSource.Token, TaskCreationOptions.LongRunning);
@@ -66,7 +66,7 @@ namespace Buttplug.Apps.DeviceSimulatorGUI
                 var now = DateTime.Now.Ticks;
                 if (LinearCurrentPosition != LinearTargetPosition)
                 {
-                    var diff = distance(now - LinearCurrentTime, LinearSpeed) * _linearPosMax;
+                    var diff = FleshlightHelper.GetDistance(Convert.ToUInt32(new TimeSpan(now - LinearCurrentTime).TotalMilliseconds), LinearSpeed);
                     var diff2 = LinearTargetPosition - LinearCurrentPosition;
                     if (diff2 < 0)
                     {
@@ -82,20 +82,13 @@ namespace Buttplug.Apps.DeviceSimulatorGUI
 
                     Dispatcher.Invoke(() =>
                     {
-                        LinearPosition.Value = LinearCurrentPosition;
+                        LinearPosition.Value = LinearCurrentPosition * LinearPosition.Maximum;
                     });
                 }
 
                 LinearCurrentTime = now;
                 Thread.Sleep(10);
             }
-        }
-
-        private double distance(long time, double speed)
-        {
-            var mil = Math.Pow(speed / 25000, -0.95);
-            var diff = mil - (Convert.ToDouble(time) / 1e6);
-            return 90 - ((diff / mil) * 90);
         }
 
         private void IdChangedEventHandler(object o, TextChangedEventArgs args)

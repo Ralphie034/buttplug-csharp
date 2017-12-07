@@ -43,6 +43,8 @@ namespace Buttplug.Server.Bluetooth.Devices
 
     internal class FleshlightLaunch : ButtplugBluetoothDevice
     {
+        private double _lastPosition = 0;
+
         public FleshlightLaunch([NotNull] IButtplugLogManager aLogManager,
                                 [NotNull] IBluetoothDeviceInterface aInterface,
                                 [NotNull] IBluetoothDeviceInfo aInfo)
@@ -77,6 +79,24 @@ namespace Buttplug.Server.Bluetooth.Devices
             return Task.FromResult<ButtplugMessage>(new Ok(aMsg.Id));
         }
 
+        // Speed returns the speed (in percent) to move the given distance (in percent)
+        // in the given duration.
+        // Thanks to @funjack - https://github.com/funjack/launchcontrol/blob/master/protocol/funscript/functions.go
+        private double GetSpeed(double aDistance, uint aDuration)
+        {
+            if (aDistance <= 0)
+            {
+                return 0;
+            }
+            else if (aDistance > 1)
+            {
+                aDistance = 1;
+            }
+
+            double mil = Convert.ToDouble(aDuration) * 90 * aDistance;
+            return Math.Min(250 * Math.Pow(mil, -1.05), 1);
+        }
+
         private async Task<ButtplugMessage> HandleFleshlightLaunchRawCmd(ButtplugDeviceMessage aMsg)
         {
             // TODO: Split into Command message and Control message? (Issue #17)
@@ -89,20 +109,29 @@ namespace Buttplug.Server.Bluetooth.Devices
 
             if (cmdMsg2 != null)
             {
-                foreach (var v in cmdMsg2.Speeds)
+                foreach (var v in cmdMsg2.Vectors)
                 {
                     if (v.Index != 0)
                     {
                         continue;
                     }
 
+                    var args = new[]
+                    {
+                        (byte)Convert.ToUInt32(v.Position * 99),
+                        (byte)Convert.ToUInt32(GetSpeed(Math.Abs(_lastPosition - v.Position), v.Duration) * 99),
+                    };
+
+                    _lastPosition = v.Position;
+
                     return await Interface.WriteValue(aMsg.Id,
-                        Info.Characteristics[(uint)FleshlightLaunchBluetoothInfo.Chrs.Tx],
-                        new[] { (byte)Convert.ToUInt32(v.Position * 99), (byte)Convert.ToUInt32(v.Speed * 99) });
+                        Info.Characteristics[(uint)FleshlightLaunchBluetoothInfo.Chrs.Tx], args);
                 }
 
                 return new Ok(aMsg.Id);
             }
+
+            _lastPosition = cmdMsg1.Position / 99;
 
             return await Interface.WriteValue(aMsg.Id,
                 Info.Characteristics[(uint)FleshlightLaunchBluetoothInfo.Chrs.Tx],

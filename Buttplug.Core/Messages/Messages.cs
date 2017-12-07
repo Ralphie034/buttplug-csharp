@@ -614,7 +614,7 @@ namespace Buttplug.Core.Messages
 
     public class LinearCmd : ButtplugDeviceMessage
     {
-        public class VectoreIndex
+        public class VectorIndex
         {
             private double _speedImpl = 0;
 
@@ -624,24 +624,7 @@ namespace Buttplug.Core.Messages
             public uint Index = 0;
 
             [JsonProperty(Required = Required.Always)]
-            public double Speed
-            {
-                get => _speedImpl;
-                set
-                {
-                    if (value < 0)
-                    {
-                        throw new ArgumentException("VibrateCmd Speed cannot be less than 0!");
-                    }
-
-                    if (value > 1)
-                    {
-                        throw new ArgumentException("VibrateCmd Speed cannot be greater than 1!");
-                    }
-
-                    _speedImpl = value;
-                }
-            }
+            public uint Duration;
 
             [JsonProperty(Required = Required.Always)]
             public double Position
@@ -663,21 +646,21 @@ namespace Buttplug.Core.Messages
                 }
             }
 
-            public VectoreIndex(uint aIndex, double aSpeed, double aPosition)
+            public VectorIndex(uint aIndex, uint aDuration, double aPosition)
             {
                 Index = aIndex;
-                Speed = aSpeed;
+                Duration = aDuration;
                 Position = aPosition;
             }
         }
 
         [JsonProperty(Required = Required.Always)]
-        public List<VectoreIndex> Speeds;
+        public List<VectorIndex> Vectors;
 
-        public LinearCmd(uint aDeviceIndex, List<VectoreIndex> aSpeeds, uint aId = ButtplugConsts.DefaultMsgId)
+        public LinearCmd(uint aDeviceIndex, List<VectorIndex> aVectors, uint aId = ButtplugConsts.DefaultMsgId)
             : base(aId, aDeviceIndex)
         {
-            Speeds = aSpeeds;
+            Vectors = aVectors;
             MessageVersioningVersion = 1;
         }
     }

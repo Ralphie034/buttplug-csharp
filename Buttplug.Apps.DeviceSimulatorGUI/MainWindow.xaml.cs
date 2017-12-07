@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Buttplug.DeviceSimulator.PipeMessages;
+using Buttplug.Server.Util;
 
 namespace Buttplug.Apps.DeviceSimulatorGUI
 {
@@ -177,8 +178,26 @@ namespace Buttplug.Apps.DeviceSimulatorGUI
 
                             if (dev.HasLinear)
                             {
-                                dev.LinearTargetPosition = Math.Min(l.Position, 99);
-                                dev.LinearSpeed = Math.Min(l.Speed, 99);
+                                dev.LinearTargetPosition = l.Position;
+                                dev.LinearSpeed = l.Speed;
+                            }
+                        }
+
+                        break;
+
+                    case Linear2 l:
+                        foreach (DeviceSimulator dev in tabs.Values)
+                        {
+                            if (dev == null || dev.Id != l.Id)
+                            {
+                                return;
+                            }
+
+                            if (dev.HasLinear)
+                            {
+                                double dist = Math.Abs(dev.LinearTargetPosition - l.Position);
+                                dev.LinearSpeed = FleshlightHelper.GetSpeed(dist, l.Duration);
+                                dev.LinearTargetPosition = l.Position;
                             }
                         }
 

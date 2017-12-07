@@ -63,9 +63,14 @@ namespace Buttplug.Server.Managers.SimulatorManager
             _msgQueue.Enqueue(new StopDevice(aDev.Identifier));
         }
 
-        internal void Linear(SimulatedButtplugDevice aDev, uint aSpeed, uint aPosition)
+        internal void Linear(SimulatedButtplugDevice aDev, double aSpeed, double aPosition)
         {
             _msgQueue.Enqueue(new Linear(aDev.Identifier, aSpeed, aPosition));
+        }
+
+        internal void Linear2(SimulatedButtplugDevice aDev, uint aDuration, double aPosition)
+        {
+            _msgQueue.Enqueue(new Linear2(aDev.Identifier, aDuration, aPosition));
         }
 
         private void connAccepter(CancellationToken aCancellationToken)

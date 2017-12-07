@@ -100,13 +100,27 @@ namespace Buttplug.DeviceSimulator.PipeMessages
     internal class Linear : IDeviceSimulatorPipeMessage
     {
         public string Id;
-        public uint Speed;
-        public uint Position;
+        public double Speed;
+        public double Position;
 
-        public Linear(string aId, uint aSpeed, uint aPosition)
+        public Linear(string aId, double aSpeed, double aPosition)
         {
             Id = aId;
             Speed = aSpeed;
+            Position = aPosition;
+        }
+    }
+
+    internal class Linear2 : IDeviceSimulatorPipeMessage
+    {
+        public string Id;
+        public uint Duration;
+        public double Position;
+
+        public Linear2(string aId, uint aDuration, double aPosition)
+        {
+            Id = aId;
+            Duration = aDuration;
             Position = aPosition;
         }
     }

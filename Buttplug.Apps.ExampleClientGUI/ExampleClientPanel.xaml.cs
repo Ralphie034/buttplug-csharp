@@ -211,5 +211,25 @@ namespace Buttplug.Apps.ExampleClientGUI
                 }
             }
         }
+
+        private void SendLinear2_Click(object sender, RoutedEventArgs e)
+        {
+            if (!_client.IsConnected)
+            {
+                return;
+            }
+
+            foreach (var dev in Devices.Values)
+            {
+                if (dev.AllowedMessages.ContainsKey("FleshlightLaunchFW12Cmd"))
+                {
+                    _client.SendDeviceMessage(dev,
+                        new LinearCmd(dev.Index, new List<LinearCmd.VectorIndex>()
+                        {
+                            new LinearCmd.VectorIndex(0, Convert.ToUInt32(LinearDuration.Text), Linear2Position.Value),
+                        }, _client.nextMsgId));
+                }
+            }
+        }
     }
 }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
+using Buttplug.Server.Util;
 using static Buttplug.Server.Managers.ETSerialManager.ET312Protocol;
 
 namespace Buttplug.Server.Managers.ETSerialManager
@@ -222,7 +223,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
 
             if (cmdMsg2 != null)
             {
-                foreach (var v in cmdMsg2.Speeds)
+                foreach (var v in cmdMsg2.Vectors)
                 {
                     if (v.Index != 0)
                     {
@@ -231,7 +232,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
 
                     cmdMsg1 = new FleshlightLaunchFW12Cmd(
                         cmdMsg2.DeviceIndex,
-                        Convert.ToUInt32(v.Speed * 99),
+                        Convert.ToUInt32(FleshlightHelper.GetSpeed(Math.Abs((_position / 100) - v.Position), v.Duration) * 99),
                         Convert.ToUInt32(v.Position * 99),
                         cmdMsg2.Id);
 
@@ -247,8 +248,8 @@ namespace Buttplug.Server.Managers.ETSerialManager
 
             lock (_movementLock)
             {
-                _speed = cmdMsg1.Speed;
-                _position = cmdMsg1.Position;
+                _speed = (Convert.ToDouble(cmdMsg1.Speed) / 99) * 100;
+                _position = (Convert.ToDouble(cmdMsg1.Position) / 99) * 100;
 
                 _position = _position < 0 ? 0 : _position;
                 _position = _position > 100 ? 100 : _position;
@@ -257,9 +258,8 @@ namespace Buttplug.Server.Managers.ETSerialManager
 
                 // This is @funjack's algorithm for converting Fleshlight Launch
                 // commands into absolute distance (percent) / duration (millisecond) values
-                double distance = Math.Abs(_position - _currentPosition);
-                double mil = Math.Pow(_speed / 25000, -0.95);
-                double duration = mil / (90 / distance);
+                var distance = Math.Abs(_position - _currentPosition);
+                var duration = FleshlightHelper.GetDuration(distance / 100, _speed / 100);
 
                 // We convert those into "position" increments for our OnUpdate() timer event.
                 _increment = 1.5 * (distance / (duration / _updateInterval));
