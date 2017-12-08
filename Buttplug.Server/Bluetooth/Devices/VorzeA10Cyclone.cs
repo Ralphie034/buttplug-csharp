@@ -44,7 +44,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                    aInfo)
         {
             MsgFuncs.Add(typeof(VorzeA10CycloneCmd), new ButtplugDeviceWrapper(HandleVorzeA10CycloneCmd));
-            MsgFuncs.Add(typeof(RotateCmd), new ButtplugDeviceWrapper(HandleVorzeA10CycloneCmd, new Dictionary<string, string>() { { "RotatorCount", "1" } }));
+            MsgFuncs.Add(typeof(RotateCmd), new ButtplugDeviceWrapper(HandleVorzeA10CycloneCmd, new MessageAttributes() { FeatureCount = 1 }));
             MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceWrapper(HandleStopDeviceCmd));
         }
 

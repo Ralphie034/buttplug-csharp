@@ -65,15 +65,15 @@ namespace Buttplug.Core
         public class ButtplugDeviceWrapper
         {
             public Func<ButtplugDeviceMessage, Task<ButtplugMessage>> Func;
-            public Dictionary<string, string> Attrs;
+            public MessageAttributes Attrs;
 
-            public ButtplugDeviceWrapper(Func<ButtplugDeviceMessage, Task<ButtplugMessage>> aFunc, Dictionary<string, string> aAttrs = null)
+            public ButtplugDeviceWrapper(Func<ButtplugDeviceMessage, Task<ButtplugMessage>> aFunc, MessageAttributes aAttrs = null)
             {
                 Func = aFunc;
                 Attrs = aAttrs;
                 if (Attrs == null)
                 {
-                    Attrs = new Dictionary<string, string>();
+                    Attrs = new MessageAttributes();
                 }
             }
         }
@@ -96,14 +96,14 @@ namespace Buttplug.Core
             return MsgFuncs.Keys;
         }
 
-        public Dictionary<string, string> GetMessageAttrs(Type aMsg)
+        public MessageAttributes GetMessageAttrs(Type aMsg)
         {
             if (MsgFuncs.TryGetValue(aMsg, out var wrapper))
             {
-                return wrapper.Attrs ?? new Dictionary<string, string>();
+                return wrapper.Attrs ?? new MessageAttributes();
             }
 
-            return new Dictionary<string, string>();
+            return new MessageAttributes();
         }
 
         protected void InvokeDeviceRemoved()

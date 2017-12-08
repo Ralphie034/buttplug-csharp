@@ -158,10 +158,9 @@ namespace Buttplug.Apps.ExampleClientGUI
             {
                 if (dev.AllowedMessages.TryGetValue("VibrateCmd", out var attrs))
                 {
-                    attrs.TryGetValue("VibratorCount", out var vcStr);
                     try
                     {
-                        uint vibratorCount = Convert.ToUInt32(vcStr);
+                        uint vibratorCount = attrs.FeatureCount ?? 0;
 
                         for (uint i = 0; i < vibratorCount; i++)
                         {
@@ -190,10 +189,9 @@ namespace Buttplug.Apps.ExampleClientGUI
             {
                 if (dev.AllowedMessages.TryGetValue("RotateCmd", out var attrs))
                 {
-                    attrs.TryGetValue("RotatorCount", out var vcStr);
                     try
                     {
-                        uint rotatorCount = Convert.ToUInt32(vcStr);
+                        uint rotatorCount = attrs.FeatureCount ?? 0;
 
                         for (uint i = 0; i < rotatorCount; i++)
                         {

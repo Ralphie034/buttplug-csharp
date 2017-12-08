@@ -75,6 +75,15 @@ namespace Buttplug.Core.Messages
         }
     }
 
+    public class MessageAttributes
+    {
+        /// <summary>
+        /// Number of actuators/sensors/channels/etc this message is addressing
+        /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public uint? FeatureCount = null;
+    }
+
     public class DeviceMessageInfo
     {
         [JsonProperty(Required = Required.Always)]
@@ -84,11 +93,11 @@ namespace Buttplug.Core.Messages
         public uint DeviceIndex;
 
         [JsonProperty(Required = Required.Always, NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, Dictionary<string, string>> DeviceMessages =
-            new Dictionary<string, Dictionary<string, string>>();
+        public Dictionary<string, MessageAttributes> DeviceMessages =
+            new Dictionary<string, MessageAttributes>();
 
         public DeviceMessageInfo(uint aIndex, string aName,
-            Dictionary<string, Dictionary<string, string>> aMessages)
+            Dictionary<string, MessageAttributes> aMessages)
         {
             DeviceName = aName;
             DeviceIndex = aIndex;
@@ -171,11 +180,11 @@ namespace Buttplug.Core.Messages
         public string DeviceName;
 
         [JsonProperty(Required = Required.Always, NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, Dictionary<string, string>> DeviceMessages =
-            new Dictionary<string, Dictionary<string, string>>();
+        public Dictionary<string, MessageAttributes> DeviceMessages =
+            new Dictionary<string, MessageAttributes>();
 
         public DeviceAdded(uint aIndex, string aName,
-            Dictionary<string, Dictionary<string, string>> aMessages)
+            Dictionary<string, MessageAttributes> aMessages)
             : base(ButtplugConsts.SystemMsgId, aIndex)
         {
             DeviceName = aName;

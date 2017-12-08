@@ -55,7 +55,7 @@ namespace Buttplug.Server.Bluetooth.Devices
         {
             // Setup message function array
             MsgFuncs.Add(typeof(FleshlightLaunchFW12Cmd), new ButtplugDeviceWrapper(HandleFleshlightLaunchRawCmd));
-            MsgFuncs.Add(typeof(LinearCmd), new ButtplugDeviceWrapper(HandleFleshlightLaunchRawCmd, new Dictionary<string, string>() { { "ActuatorCount", "1" } }));
+            MsgFuncs.Add(typeof(LinearCmd), new ButtplugDeviceWrapper(HandleFleshlightLaunchRawCmd, new MessageAttributes() { FeatureCount = 1 }));
             MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceWrapper(HandleStopDeviceCmd));
         }
 

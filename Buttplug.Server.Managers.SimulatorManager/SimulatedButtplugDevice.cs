@@ -22,14 +22,14 @@ namespace Buttplug.Server.Managers.SimulatorManager
             if (da.HasLinear)
             {
                 MsgFuncs.Add(typeof(FleshlightLaunchFW12Cmd), new ButtplugDeviceWrapper(HandleFleshlightLaunchFW12Cmd));
-                MsgFuncs.Add(typeof(LinearCmd), new ButtplugDeviceWrapper(HandleLinearCmd, new Dictionary<string, string>() { { "ActuatorCount", "1" } }));
+                MsgFuncs.Add(typeof(LinearCmd), new ButtplugDeviceWrapper(HandleLinearCmd, new MessageAttributes() { FeatureCount = 1 }));
             }
 
             if (da.VibratorCount > 0)
             {
                 VibratorCount = da.VibratorCount;
                 MsgFuncs.Add(typeof(SingleMotorVibrateCmd), new ButtplugDeviceWrapper(HandleSingleMotorVibrateCmd));
-                MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceWrapper(HandleVibrateCmd, new Dictionary<string, string>() { { "VibratorCount", da.VibratorCount.ToString() } }));
+                MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceWrapper(HandleVibrateCmd, new MessageAttributes() { FeatureCount = da.VibratorCount }));
             }
 
             if (da.HasRotator)

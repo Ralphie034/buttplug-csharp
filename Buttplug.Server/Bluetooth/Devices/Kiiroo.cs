@@ -52,7 +52,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             if (aInterface.Name == "PEARL")
             {
                 VibratorCount = 1;
-                MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceWrapper(HandleVibrateCmd, new Dictionary<string, string>() { { "VibratorCount", "1" } }));
+                MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceWrapper(HandleVibrateCmd, new MessageAttributes() { FeatureCount = 1 }));
                 MsgFuncs.Add(typeof(SingleMotorVibrateCmd), new ButtplugDeviceWrapper(HandleVibrateCmd));
             }
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
+using Buttplug.Core.Messages;
 
 namespace Buttplug.Core
 {
@@ -39,6 +40,7 @@ namespace Buttplug.Core
 
         void Disconnect();
 
-        Dictionary<string, string> GetMessageAttrs(Type aMsg);
+        [NotNull]
+        MessageAttributes GetMessageAttrs(Type aMsg);
     }
 }

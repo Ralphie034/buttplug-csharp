@@ -50,9 +50,11 @@
       "items": {
         "description": "A list of the messages attributes.",
         "type": "object",
-        "items": {
-          "type": "string"
-        }
+        "properties": {
+          "FeatureCount": { "$ref": "#/components/FeatureCount" }
+        },
+        "additionalProperties": true,
+        "minItems": 1
       }
     },
     "SystemIdMessage": {

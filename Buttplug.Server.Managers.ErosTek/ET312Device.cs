@@ -72,7 +72,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
 
             // We're now ready to receive events
             MsgFuncs.Add(typeof(FleshlightLaunchFW12Cmd), new ButtplugDeviceWrapper(HandleFleshlightLaunchFW12Cmd));
-            MsgFuncs.Add(typeof(LinearCmd), new ButtplugDeviceWrapper(HandleFleshlightLaunchFW12Cmd, new Dictionary<string, string>() { { "ActuatorCount", "1" } }));
+            MsgFuncs.Add(typeof(LinearCmd), new ButtplugDeviceWrapper(HandleFleshlightLaunchFW12Cmd, new MessageAttributes() { FeatureCount = 1 }));
             MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceWrapper(HandleStopDeviceCmd));
 
             // Start update timer

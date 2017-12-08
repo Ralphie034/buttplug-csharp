@@ -13,34 +13,34 @@ namespace Buttplug.Client
         public readonly string Name;
 
         [NotNull]
-        public readonly Dictionary<string, Dictionary<string, string>> AllowedMessages;
+        public readonly Dictionary<string, MessageAttributes> AllowedMessages;
 
         public ButtplugClientDevice(DeviceMessageInfo aDevInfo)
         {
             Index = aDevInfo.DeviceIndex;
             Name = aDevInfo.DeviceName;
-            AllowedMessages = new Dictionary<string, Dictionary<string, string>>(aDevInfo.DeviceMessages);
+            AllowedMessages = new Dictionary<string, MessageAttributes>(aDevInfo.DeviceMessages);
         }
 
-        public ButtplugClientDevice(uint aIndex, string aName, Dictionary<string, Dictionary<string, string>> aMessages)
+        public ButtplugClientDevice(uint aIndex, string aName, Dictionary<string, MessageAttributes> aMessages)
         {
             Index = aIndex;
             Name = aName;
-            AllowedMessages = new Dictionary<string, Dictionary<string, string>>(aMessages);
+            AllowedMessages = new Dictionary<string, MessageAttributes>(aMessages);
         }
 
         public ButtplugClientDevice(DeviceAdded aDevInfo)
         {
             Index = aDevInfo.DeviceIndex;
             Name = aDevInfo.DeviceName;
-            AllowedMessages = new Dictionary<string, Dictionary<string, string>>(aDevInfo.DeviceMessages);
+            AllowedMessages = new Dictionary<string, MessageAttributes>(aDevInfo.DeviceMessages);
         }
 
         public ButtplugClientDevice(DeviceRemoved aDevInfo)
         {
             Index = aDevInfo.DeviceIndex;
             Name = string.Empty;
-            AllowedMessages = new Dictionary<string, Dictionary<string, string>>();
+            AllowedMessages = new Dictionary<string, MessageAttributes>();
         }
     }
 }
